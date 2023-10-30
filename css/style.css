@@ -1,8 +1,8 @@
 @charset 'utf-8';
-@import url('https://fonts.googleapis.com/css?family=Share:400i,700i');
 @import url('bootstrap.min.css');
 
-html, body {
+html,
+body {
     height: 100%;
 }
 
@@ -13,14 +13,44 @@ body {
     overflow-x: hidden;
 }
 
+p,
+p:hover,
+.p,
+.p:hover {
+    color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: calc(.5em + 0.8vw);
+    font-family: none;
+}
+
+a,
+a:hover,
+.a,
+.a:hover {
+    color: white;
+    font-size: calc(.5em + 0.8vw);
+    font-family: none;
+    text-decoration: underline;
+}
+
+.play-pause-icon {
+    width: calc(.5em + 3vw);
+}
+
+.volume-icon {
+    width: calc(.5em + .5vw);
+}
+
 .cover-site {
     min-width: 100%;
     min-height: 100%;
     position: fixed;
-    background: url('../img/background.jpg') no-repeat;
+    background-color: black;
     background-position: center;
     background-size: cover;
-    transition: background-image 1s;
     background-position: center;
     background-attachment: fixed;
 }
@@ -56,25 +86,13 @@ body {
 
 .cover-album {
     max-width: 80%;
-    margin: auto;
-    background: url('../img/bg-capa.jpg') no-repeat;
+    /* height: 80%; */
+    /* margin: auto; */
     background-size: cover;
+    background-color: black;
     border: 1px solid #383838;
     box-shadow: 0px 5px 10px 3px rgba(0, 0, 0, 0.4);
-    transition: background-image 1s;
     margin-bottom: 15px;
-}
-
-.watermark {
-    width: 89px;
-    height: 35px;
-    background: url(../img/logo.png) no-repeat;
-    background-size: auto 35px;
-    opacity: 0.5;
-    position: relative;
-    bottom: 36px;
-    right: -1px;
-    z-index: 5;
 }
 
 #currentCoverArt {
@@ -91,31 +109,17 @@ body {
 }
 
 .info-current-song {
-    font-family: 'Share', sans-serif;
     text-align: center;
 }
 
 .info-current-song h2 {
-    font-size: 22px;
+    font-size: calc(.5em + 1vw);
     font-weight: 700;
 }
 
 .info-current-song h3 {
-    font-size: 18px;
+    font-size: calc(.5em + .9vw);
     font-weight: 400;
-}
-
-.play-pause {
-    font-size: 65px;
-}
-
-.play-pause i {
-    cursor: pointer;
-}
-
-.volume-icon {
-    font-size: 28px;
-    margin-top: -5px;
 }
 
 .volume-slide {
@@ -126,29 +130,9 @@ body {
     display: none;
 }
 
-.vagalume a {
-    color: #fff;
-    text-decoration: underline;
-}
-
-.lyrics {
-    text-transform: uppercase;
-    text-decoration: underline;
-    color: #fff;
-    font-size: 1em;
-    font-weight: 400;
-    outline: none;
-    transition: .3s;
-}
-
-.lyrics:active {
-    text-decoration: none;
-    color: #fff;
-}
-
-.lyrics:visited {
-    text-decoration: none;
-    color: #fff;
+.percentual-volume {
+    margin-top: calc(.5em + .2vw);
+    font-size: calc(.5em + .7vw);
 }
 
 .modal-content {
@@ -247,58 +231,19 @@ input[type=range]::-ms-thumb {
     cursor: pointer;
 }
 
-
-.historic h2 {
-    color: #fff;
-    border-bottom: 2px solid #fff;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    margin: 10px 0;
-}
-
-.historic article {
-    margin: 5px 0;
-}
-
-.historic .cover-historic {
-    width: 95px;
-    height: 95px;
-    margin-right: 15px;
-    float: left;
-    background: url('../img/bg-capa.jpg') no-repeat;
-    background-size: cover;
-    border: 1px solid #383838;
-    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.3);
-    transition: background-image 1s;
-}
-
-.historic .music-info {
-    color: #fff;
-    font-family: 'Share', sans-serif;
-}
-
-.historic .music-info .song {
-    width: 100%;
-    font-weight: bold;
-    font-size: 20px;
-    text-transform: uppercase;
-    margin-bottom: -5px;
-}
-
-@media(max-width: 370px) {
+@media(max-width: 767px) {
     .cover-album {
-        max-width: 100%;
+        visibility: hidden;
+    }
+
+    #currentCoverArt {
+        visibility: hidden;
     }
 }
 
 @media(min-width: 576px) {
     .volume-control {
         display: flex;
-    }
-
-    .call-lyrics {
-        margin-top: 20px;
     }
 }
 

@@ -21,17 +21,13 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-const RADIO_NAME = settings.radio_name;
 const URL_STREAMING = settings.url_streaming;
 const STREAMING_TYPE = settings.streaming_type;
-const API_KEY = settings.api_key;
-const HISTORIC = settings.historic;
-const NEXT_SONG = settings.next_song;
+const DEFAULT_BACKGROUND_ART = settings.default_background_art;
 const DEFAULT_COVER_ART = settings.default_cover_art;
 
 window.onload = function () {
     var page = new Page;
-    page.changeTitlePage();
     page.setVolume();
 
     var player = new Player();
@@ -43,14 +39,17 @@ window.onload = function () {
         getStreamingData();
     }, 4000);
 
-    var coverArt = document.getElementsByClassName('cover-album')[0];
+    var coverBackground = document.getElementById('bgCover');
+    coverBackground.style.backgroundImage = 'url(' + DEFAULT_BACKGROUND_ART + ')';
+    coverBackground.className = 'animated appear';
 
+    var coverArt = document.getElementsByClassName('cover-album')[0];
     coverArt.style.height = coverArt.offsetWidth + 'px';
 }
 
 // DOM control
 function Page() {
-    this.changeTitlePage = function (title = RADIO_NAME) {
+    this.changeTitlePage = function (title = "") {
         document.title = title;
     };
 
@@ -60,14 +59,11 @@ function Page() {
 
         if (song !== currentSong.innerHTML) {
             // Animate transition
-            currentSong.className = 'animated flipInY text-uppercase';
+            currentSong.className = 'animated appear text-uppercase';
             currentSong.innerHTML = song;
 
-            currentArtist.className = 'animated flipInY text-capitalize';
+            currentArtist.className = 'animated appear text-capitalize';
             currentArtist.innerHTML = artist;
-
-            // Refresh modal title
-            document.getElementById('lyricsSong').innerHTML = song + ' - ' + artist;
 
             // Remove animation classes
             setTimeout(function () {
@@ -77,56 +73,13 @@ function Page() {
         }
     }
 
-    this.refreshHistoric = function (info, n) {
-        var $historicDiv = document.querySelectorAll('#historicSong article');
-        var $songName = document.querySelectorAll('#historicSong article .music-info .song');
-        var $artistName = document.querySelectorAll('#historicSong article .music-info .artist');
-
-        // Default cover art
-        var urlCoverArt = DEFAULT_COVER_ART;
-
-        // Get cover art for song history
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
-                var data = JSON.parse(this.responseText);
-                var artworkUrl100 = (data.resultCount) ? data.results[0].artworkUrl100 : urlCoverArt;
-
-                document.querySelectorAll('#historicSong article .cover-historic')[n].style.backgroundImage = 'url(' + artworkUrl100 + ')';
-            }
-            // Formating characters to UTF-8
-            var music = info.song.replace(/&apos;/g, '\'');
-            var songHist = music.replace(/&amp;/g, '&');
-
-            var artist = info.artist.replace(/&apos;/g, '\'');
-            var artistHist = artist.replace(/&amp;/g, '&');
-
-            $songName[n].innerHTML = songHist;
-            $artistName[n].innerHTML = artistHist;
-
-            // Add class for animation
-            $historicDiv[n].classList.add('animated');
-            $historicDiv[n].classList.add('slideInRight');
-        }
-        xhttp.open('GET', 'https://itunes.apple.com/search?term=' + info.artist + ' ' + info.song + '&media=music&limit=1', true);
-        xhttp.send();
-
-        setTimeout(function () {
-            for (var j = 0; j < 2; j++) {
-                $historicDiv[j].classList.remove('animated');
-                $historicDiv[j].classList.remove('slideInRight');
-            }
-        }, 2000);
-    }
-
     this.refreshCover = function (song = '', artist) {
         // Default cover art
-        var urlCoverArt = DEFAULT_COVER_ART;
+        var urlCoverArt = DEFAULT_COVER_ART[(Math.floor(Math.random() * DEFAULT_COVER_ART.length))];
 
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             var coverArt = document.getElementById('currentCoverArt');
-            var coverBackground = document.getElementById('bgCover');
 
             // Get cover art URL on iTunes API
             if (this.readyState === 4 && this.status === 200) {
@@ -142,9 +95,7 @@ function Page() {
                 var urlCoverArt384 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '384x384bb') : urlCoverArt;
 
                 coverArt.style.backgroundImage = 'url(' + urlCoverArt + ')';
-                coverArt.className = 'animated bounceInLeft';
-
-                coverBackground.style.backgroundImage = 'url(' + urlCoverArt + ')';
+                coverArt.className = 'animated appear';
 
                 setTimeout(function () {
                     coverArt.className = '';
@@ -155,35 +106,35 @@ function Page() {
                         title: song,
                         artist: artist,
                         artwork: [{
-                                src: urlCoverArt96,
-                                sizes: '96x96',
-                                type: 'image/png'
-                            },
-                            {
-                                src: urlCoverArt128,
-                                sizes: '128x128',
-                                type: 'image/png'
-                            },
-                            {
-                                src: urlCoverArt192,
-                                sizes: '192x192',
-                                type: 'image/png'
-                            },
-                            {
-                                src: urlCoverArt256,
-                                sizes: '256x256',
-                                type: 'image/png'
-                            },
-                            {
-                                src: urlCoverArt384,
-                                sizes: '384x384',
-                                type: 'image/png'
-                            },
-                            {
-                                src: urlCoverArt,
-                                sizes: '512x512',
-                                type: 'image/png'
-                            }
+                            src: urlCoverArt96,
+                            sizes: '96x96',
+                            type: 'image/png'
+                        },
+                        {
+                            src: urlCoverArt128,
+                            sizes: '128x128',
+                            type: 'image/png'
+                        },
+                        {
+                            src: urlCoverArt192,
+                            sizes: '192x192',
+                            type: 'image/png'
+                        },
+                        {
+                            src: urlCoverArt256,
+                            sizes: '256x256',
+                            type: 'image/png'
+                        },
+                        {
+                            src: urlCoverArt384,
+                            sizes: '384x384',
+                            type: 'image/png'
+                        },
+                        {
+                            src: urlCoverArt,
+                            sizes: '512x512',
+                            type: 'image/png'
+                        }
                         ]
                     });
                 }
@@ -207,38 +158,6 @@ function Page() {
             document.getElementById('volume').value = volumeLocalStorage;
             document.getElementById('volIndicator').innerHTML = volumeLocalStorage;
         }
-    }
-
-    this.refreshLyric = function (currentSong, currentArtist) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
-                var data = JSON.parse(this.responseText);
-
-                var openLyric = document.getElementsByClassName('lyrics')[0];
-
-                if (data.type === 'exact' || data.type === 'aprox') {
-                    var lyric = data.mus[0].text;
-
-                    document.getElementById('lyric').innerHTML = lyric.replace(/\n/g, '<br />');
-                    openLyric.style.opacity = "1";
-                    openLyric.setAttribute('data-toggle', 'modal');
-                } else {
-                    openLyric.style.opacity = "0.3";
-                    openLyric.removeAttribute('data-toggle');
-
-                    var modalLyric = document.getElementById('modalLyrics');
-                    modalLyric.style.display = "none";
-                    modalLyric.setAttribute('aria-hidden', 'true');
-                    (document.getElementsByClassName('modal-backdrop')[0]) ? document.getElementsByClassName('modal-backdrop')[0].remove(): '';
-                }
-            } else {
-                document.getElementsByClassName('lyrics')[0].style.opacity = "0.3";
-                document.getElementsByClassName('lyrics')[0].removeAttribute('data-toggle');
-            }
-        }
-        xhttp.open('GET', 'https://api.vagalume.com.br/search.php?apikey=' + API_KEY + '&art=' + currentArtist + '&mus=' + currentSong.toLowerCase(), true);
-        xhttp.send()
     }
 }
 
@@ -270,20 +189,14 @@ function Player() {
 
 // On play, change the button to pause
 audio.onplay = function () {
-    var botao = document.getElementById('playerButton');
-
-    if (botao.className === 'fa fa-play') {
-        botao.className = 'fa fa-pause';
-    }
+    $("#playerButton").attr("src", "img/icon-pause.png");
+    audio.volume = document.getElementById('volIndicator').innerHTML / 100;
 }
 
 // On pause, change the button to play
 audio.onpause = function () {
-    var botao = document.getElementById('playerButton');
-
-    if (botao.className === 'fa fa-pause') {
-        botao.className = 'fa fa-play';
-    }
+    $("#playerButton").attr("src", "img/icon-play.png");
+    audio.volume = document.getElementById('volIndicator').innerHTML / 100;
 }
 
 // Unmute when volume changed
@@ -319,8 +232,8 @@ function togglePlay() {
 
 function volumeUp() {
     var vol = audio.volume;
-    if(audio) {
-        if(audio.volume >= 0 && audio.volume < 1) {
+    if (audio) {
+        if (audio.volume >= 0 && audio.volume < 1) {
             audio.volume = (vol + .01).toFixed(2);
         }
     }
@@ -328,8 +241,8 @@ function volumeUp() {
 
 function volumeDown() {
     var vol = audio.volume;
-    if(audio) {
-        if(audio.volume >= 0.01 && audio.volume <= 1) {
+    if (audio) {
+        if (audio.volume >= 0.01 && audio.volume <= 1) {
             audio.volume = (vol - .01).toFixed(2);
         }
     }
@@ -356,7 +269,7 @@ function getStreamingData() {
 
         if (this.readyState === 4 && this.status === 200) {
 
-            if(this.response.length === 0) {
+            if (this.response.length === 0) {
                 console.log('%cdebug', 'font-size: 22px')
             }
 
@@ -373,27 +286,22 @@ function getStreamingData() {
 
             let artist = data.currentArtist.replace(/&apos;/g, '\'');
             let currentArtist = artist.replace(/&amp;/g, '&');
-            currentArtist = currentArtist.replace('  ', ' '); 
-            
+            currentArtist = currentArtist.replace('  ', ' ');
+
             // Change the title
-            document.title = currentSong + ' - ' + currentArtist + ' | ' + RADIO_NAME;
+            document.title = currentSong + ' - ' + currentArtist;
 
             if (currentSongEl.trim() !== currentSong.trim()) {
                 page.refreshCover(currentSong, currentArtist);
                 page.refreshCurrentSong(currentSong, currentArtist);
-                page.refreshLyric(currentSong, currentArtist);
-
-                for (var i = 0; i < 2; i++) {
-                    page.refreshHistoric(data.songHistory[i], i);
-                }
             }
-        } 
+        }
     };
 
     var d = new Date();
 
     // Requisition with timestamp to prevent cache on mobile devices
-    xhttp.open('GET', 'api.php?url=' + URL_STREAMING + '&streamtype=' + STREAMING_TYPE + '&historic=' + HISTORIC + '&next=' + NEXT_SONG + '&t=' + d.getTime(), true);
+    xhttp.open('GET', 'api.php?url=' + URL_STREAMING + '&streamtype=' + STREAMING_TYPE + '&t=' + d.getTime(), true);
     xhttp.send();
 }
 
@@ -401,7 +309,7 @@ function getStreamingData() {
 document.addEventListener('keydown', function (k) {
     var k = k || window.event;
     var key = k.keyCode || k.which;
-    
+
     var slideVolume = document.getElementById('volume');
 
     var page = new Page();
